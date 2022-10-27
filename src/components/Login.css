@@ -1,0 +1,40 @@
+
+
+.login-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  background: linear-gradient(105deg, rgb(150, 25, 25) 45%, rgb(255, 255, 255) 25%)
+}
+
+.pattern {
+  display: flex;
+  /* background-color: bisque; */
+  width: 50%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+}
+
+.input {
+  padding: 20px;
+  margin: 5px;
+  height: 40px;
+  width: 400px;
+}
+
+.button {
+  padding: 10px;
+  margin: 5px;
+  height: 40px;
+  width: 400px;
+  background-color: white;
+  text-decoration: none;
+  border: 1px solid rgb(15, 69, 151);
+  margin-bottom: 10px;
+}

@@ -1,0 +1,28 @@
+.wallet-container {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  justify-content: space-between;
+  margin: 20px;
+  padding: 20px;
+  margin-bottom: 0;
+  border-radius: 10px;
+}
+
+.wallet-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.wallet-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.balance-align {
+    padding-top: 20px;
+}
+
+.deposit-used {
+    padding: 10px;
+}
