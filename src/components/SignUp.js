@@ -8,6 +8,7 @@ import { collection, doc, setDoc } from "firebase/firestore";
 const SignUp = (props) => {
   const [error, setError] = useState();
   const [name, setName] = useState("");
+  const [identity, setIdentity] = useState("");
   const [userid, setUserid] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
@@ -23,6 +24,9 @@ const SignUp = (props) => {
   };
   const onConfirmPassword = (event) => {
     setconfirmPassword(event.target.value);
+  };
+  const onIdentityChange = (event) => {
+    setIdentity(event.target.value);
   };
   const onSignUp = (event) => {
     event.preventDefault();
@@ -40,9 +44,21 @@ const SignUp = (props) => {
     }
     props.onLogin(userid, password);
     const userRef = doc(collection(db, "users"));
-    const data = { user_id: userid.trim(), name: name, password: password.trim() };
+    const data = {
+      user_id: userid.trim(),
+      name: name,
+      password: password.trim(),
+      identity: identity,
+    };
     setDoc(userRef, data);
     navigate(`/charity/dashboard`);
+    if (identity === "donator") {
+      navigate(`/charity/dashboard/donator`);
+    } else if (identity === "organization") {
+      navigate(`/charity/dashboard/organization`);
+    } else {
+      navigate(`/charity/dashboard/beneficiary`);
+    }
   };
   const resetErrorHandler = () => {
     setError(null);
@@ -101,6 +117,19 @@ const SignUp = (props) => {
             className="input"
             onChange={onConfirmPassword}
           />
+          <select
+            name="identity"
+            id="id"
+            defaultValue=""
+            onChange={onIdentityChange}
+          >
+            <option value="" disabled>
+              Sign Up as
+            </option>
+            <option value="beneficiary">Beneficiary</option>
+            <option value="donor">Donor</option>
+            <option value="organization">Organization</option>
+          </select>
           <button className="button" onClick={onSignUp}>
             Sign Up
           </button>

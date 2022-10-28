@@ -57,10 +57,10 @@ const Dashboard = (props) => {
             </div>
             <WalletBalance className="wallet" />
             <div className="home-wrapper">
-              <Organization />
-              <Organization />
-              <Organization />
-              <Organization />
+              <Organization field="Donate"/>
+              <Organization field="Donate"/>
+              <Organization field="Donate"/>
+              <Organization field="Donate"/>
             </div>
           </div>
         )}

@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import "./Organization.css";
 
-const Organization = () => {
+const Organization = (props) => {
   return (
     <Fragment>
       <div className="container">
@@ -20,7 +20,7 @@ const Organization = () => {
             />
           </div>
           <div>
-            <button className="donate">Donate</button>
+            <button className="donate">{props.field}</button>
           </div>
         </div>
       </div>

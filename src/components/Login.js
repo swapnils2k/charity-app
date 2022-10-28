@@ -29,8 +29,16 @@ const Login = (props) => {
     console.log("query: ", querySnapshot);
     querySnapshot.forEach((doc) => {
       if (doc.data() != null) {
-        props.onLogin(userid, password);
-        navigate(`/charity/dashboard`);
+        if (doc.data().identity === "donor") {
+          props.onLogin(userid, password, doc.data().identity);
+          navigate(`/charity/dashboard/donor`);
+        } else if (doc.data().identity === "organization") {
+          props.onLogin(userid, password, doc.data().identity);
+          navigate(`/charity/dashboard/organization`);
+        } else {
+          props.onLogin(userid, password, doc.data().identity);
+          navigate(`/charity/dashboard/beneficiary`);
+        }
       }
       console.log(doc.id, " => ", doc.data());
     });

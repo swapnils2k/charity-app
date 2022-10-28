@@ -1,10 +1,12 @@
-
-
 .login-container {
   display: flex;
   flex-direction: row;
   height: 100vh;
-  background: linear-gradient(105deg, rgb(150, 25, 25) 45%, rgb(255, 255, 255) 25%)
+  background: linear-gradient(
+    105deg,
+    rgb(150, 25, 25) 45%,
+    rgb(255, 255, 255) 25%
+  );
 }
 
 .pattern {
@@ -38,3 +40,10 @@
   border: 1px solid rgb(15, 69, 151);
   margin-bottom: 10px;
 }
+
+select {
+  width: 400px;
+  height: 40px;
+  text-align: center;
+}
+
