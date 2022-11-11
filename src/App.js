@@ -2,9 +2,7 @@ import { Fragment, useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
-import Dashboard from "./components/Dashboard";
-import OrgDashboard from "./components/OrgDashboard";
-import BeneficiaryDashboard from "./components/BeneficiaryDashboard";
+import DashboardRedirect from "./components/DashboardRedirect";
 import Web3 from "web3";
 import { checkDonorExists } from "./Web3Client";
 
@@ -15,13 +13,13 @@ function App() {
     if (localStorage.getItem("isLoggedIn") === "1") {
       setIsLoggedIn(true);
     }
-    checkDonorExists()
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // checkDonorExists()
+    //   .then((response) => {
+    //     console.log(response);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }, []);
   const loginHandler = async (userid, password, identity) => {
     localStorage.setItem("isLoggedIn", "1");
@@ -46,9 +44,12 @@ function App() {
             path="/"
             element={
               isLoggedIn === true ? (
-                <Dashboard onLogout={logoutHandler} />
+                <DashboardRedirect
+                  onLogout={logoutHandler}
+                  loggedIn={isLoggedIn}
+                />
               ) : (
-                <Login onLogin={loginHandler} alreadyLoggedIn={isLoggedIn} />
+                <Login onLogin={loginHandler} />
               )
             }
           />
@@ -56,9 +57,12 @@ function App() {
             path="/charity/login"
             element={
               isLoggedIn === true ? (
-                <Dashboard onLogout={logoutHandler} />
+                <DashboardRedirect
+                  onLogout={logoutHandler}
+                  loggedIn={isLoggedIn}
+                />
               ) : (
-                <Login onLogin={loginHandler} alreadyLoggedIn={isLoggedIn} />
+                <Login onLogin={loginHandler} />
               )
             }
           />
@@ -66,28 +70,19 @@ function App() {
             path="/charity/signup"
             element={
               isLoggedIn === true ? (
-                <Dashboard onLogout={logoutHandler} />
+                <DashboardRedirect
+                  onLogout={logoutHandler}
+                  loggedIn={isLoggedIn}
+                />
               ) : (
-                <SignUp onLogin={loginHandler} alreadyLoggedIn={isLoggedIn} />
+                <SignUp onLogin={loginHandler} />
               )
             }
           />
           <Route
-            path="/charity/dashboard/donor"
+            path="/charity/dashboard"
             element={
-              <Dashboard onLogout={logoutHandler} loggedIn={isLoggedIn} />
-            }
-          />
-          <Route
-            path="/charity/dashboard/organization"
-            element={
-              <OrgDashboard onLogout={logoutHandler} loggedIn={isLoggedIn} />
-            }
-          />
-          <Route
-            path="/charity/dashboard/beneficiary"
-            element={
-              <BeneficiaryDashboard
+              <DashboardRedirect
                 onLogout={logoutHandler}
                 loggedIn={isLoggedIn}
               />

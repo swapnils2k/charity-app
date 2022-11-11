@@ -1,0 +1,13 @@
+.button-enabled {
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    background-color: rgb(58, 175, 58);
+    color: black;
+}
+
+.button-disabled {
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    background-color: rgb(146, 158, 146);
+    color: rgb(0, 0, 0);
+}

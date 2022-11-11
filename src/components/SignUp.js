@@ -1,9 +1,16 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "./Modal";
 import "./Login.css";
-import { db } from "../Firebase";
-import { collection, doc, setDoc } from "firebase/firestore";
+import Web3 from "web3";
+import { donorSignUp, beneSignUp, orgSignUp } from "../Web3Client";
+import Organization from "./Organization";
+import {
+  putUser,
+  putOrganization,
+  putBeneficiary,
+  getOrgList,
+} from "../DataFunctions";
 
 const SignUp = (props) => {
   const [error, setError] = useState();
@@ -12,6 +19,10 @@ const SignUp = (props) => {
   const [userid, setUserid] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState("");
+  const [orgList, setOrgList] = useState([]);
+  const [selectedOrg, setSelectedOrg] = useState("");
+  const [amount, setAmount] = useState(0);
+  const [orgDetails, setOrgDetails] = useState(0);
   const navigate = useNavigate();
   const onNameChange = (event) => {
     setName(event.target.value);
@@ -27,6 +38,18 @@ const SignUp = (props) => {
   };
   const onIdentityChange = (event) => {
     setIdentity(event.target.value);
+    getOrgList().then((response) => {
+      setOrgList(response);
+    });
+  };
+  const onSetOrg = (event) => {
+    setSelectedOrg(event.target.value);
+  };
+  const onAmountChangeHandler = (event) => {
+    setAmount(event.target.value);
+  };
+  const onOrgDetailsChangeHandler = (event) => {
+    setOrgDetails(event.target.value);
   };
   const onSignUp = (event) => {
     event.preventDefault();
@@ -42,27 +65,59 @@ const SignUp = (props) => {
       });
       return;
     }
-    props.onLogin(userid, password);
-    const userRef = doc(collection(db, "users"));
-    const data = {
-      user_id: userid.trim(),
-      name: name,
-      password: password.trim(),
-      identity: identity,
-    };
-    setDoc(userRef, data);
-    navigate(`/charity/dashboard`);
-    if (identity === "donator") {
-      navigate(`/charity/dashboard/donator`);
+    // if (identity == "organization") {
+    //   putOrganization(userid.trim(), name, orgDetails);
+    // }
+    // if (identity == "beneficiary") {
+    //   putBeneficiary(name, selectedOrg, userid.trim());
+    // }
+    // putUser(userid.trim(), name, password.trim(), identity);
+    // props.onLogin(userid, password, identity);
+
+    if (identity === "donor") {
+      donorSignUp(userid)
+        .then((result) => {
+          console.log("Signed Up as Donor", result);
+          putUser(userid.trim(), name, password.trim(), identity);
+          props.onLogin(userid, password, identity);
+          navigate(`/charity/dashboard`);
+        })
+        .catch((e) => {
+          console.log(e);
+          return;
+        });
     } else if (identity === "organization") {
-      navigate(`/charity/dashboard/organization`);
+      orgSignUp(name)
+        .then((result) => {
+          console.log("Signed Up as Organization", result);
+          putOrganization(userid.trim(), name, orgDetails);
+          putUser(userid.trim(), name, password.trim(), identity);
+          props.onLogin(userid, password, identity);
+          navigate(`/charity/dashboard`);
+        })
+        .catch((e) => {
+          console.log(e);
+          return;
+        });
     } else {
-      navigate(`/charity/dashboard/beneficiary`);
+      beneSignUp(name, amount, selectedOrg)
+        .then((result) => {
+          console.log("Signed Up as Beneficiary", result);
+          putBeneficiary(name, selectedOrg, userid.trim());
+          putUser(userid.trim(), name, password.trim(), identity);
+          props.onLogin(userid, password, identity);
+          navigate(`/charity/dashboard`);
+        })
+        .catch((e) => {
+          console.log(e);
+          return;
+        });
     }
   };
   const resetErrorHandler = () => {
     setError(null);
   };
+
   const routeLink = `/charity/login`;
   return (
     <Fragment>
@@ -84,7 +139,6 @@ const SignUp = (props) => {
             className="input"
             onChange={onNameChange}
           />
-
           {/* <label htmlFor="DEID" className="label">
           DE ID
         </label> */}
@@ -95,7 +149,6 @@ const SignUp = (props) => {
             className="input"
             onChange={onUserIdChange}
           />
-
           {/* <label htmlFor="password" className="label">
           Password
         </label> */}
@@ -106,7 +159,6 @@ const SignUp = (props) => {
             className="input"
             onChange={onPasswordChange}
           />
-
           {/* <label htmlFor="password" className="label">
           Password
         </label> */}
@@ -130,6 +182,43 @@ const SignUp = (props) => {
             <option value="donor">Donor</option>
             <option value="organization">Organization</option>
           </select>
+          {identity === "beneficiary" && (
+            <select
+              name="organization"
+              id="id"
+              defaultValue=""
+              onChange={onSetOrg}
+            >
+              <option value="" disabled>
+                Choose Organization
+              </option>
+              {orgList.map((org, i) => {
+                return (
+                  <option key={i} value={org.org_id}>
+                    {org.org_name}
+                  </option>
+                );
+              })}
+            </select>
+          )}
+          {identity == "beneficiary" && (
+            <input
+              type="number"
+              placeholder="Request Amount"
+              id="amount"
+              className="input"
+              onChange={onAmountChangeHandler}
+            />
+          )}
+          {identity === "organization" && (
+            <input
+              type="text"
+              placeholder="Enter Organization Details"
+              id="organization"
+              className="input"
+              onChange={onOrgDetailsChangeHandler}
+            />
+          )}
           <button className="button" onClick={onSignUp}>
             Sign Up
           </button>

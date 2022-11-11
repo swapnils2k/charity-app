@@ -63,8 +63,12 @@ img {
 
 .transaction-div {
   margin-bottom: 20px;
-  font-weight: 400;
-  font-size: larger;
+  font-size: 18px;
+}
+
+.table-content {
+  overflow-x: auto;
+  max-width: 1100px;
 }
 
 table {
@@ -75,11 +79,15 @@ table {
 th {
   font-weight: 500;
   text-align: left;
-  padding: 15px;
+  padding: 8px;
 }
 
 td {
-    padding: 10px;
+  padding: 10px;
+  text-align: left;
+  padding: 8px;
+  max-width: 200px;
+  word-wrap: break-word;
 }
 
 tr {
@@ -95,6 +103,39 @@ tr:last-child {
 }
 
 .wallet {
-    background-color: white;
-    display: flex;
+  background-color: white;
+  display: flex;
+}
+
+.org-req-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.org-req-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  border-bottom: 1px solid black;
+  padding: 5px;
+}
+
+.org-dash-button-a {
+  background-color: rgb(48, 189, 48);
+}
+
+.org-dash-button-r {
+  background-color: rgb(206, 67, 67);
+}
+
+.org-dash-button {
+  padding: 5px 10px 5px 10px;
+  margin: 5px;
+  border-radius: 5px;
+}
+
+.loading-transaction {
+  display: flex;
+  justify-content: center;
 }

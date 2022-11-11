@@ -2,8 +2,7 @@ import { Fragment, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import Modal from "./Modal";
-import { db } from "../Firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { checkUserExists } from "../DataFunctions";
 
 const Login = (props) => {
   const [error, setError] = useState();
@@ -19,36 +18,21 @@ const Login = (props) => {
   };
   const onLogin = async (event) => {
     event.preventDefault();
-    const userRef = collection(db, "users");
-    const q = query(
-      userRef,
-      where("user_id", "==", userid),
-      where("password", "==", password)
-    );
-    const querySnapshot = await getDocs(q);
-    console.log("query: ", querySnapshot);
-    querySnapshot.forEach((doc) => {
-      if (doc.data() != null) {
-        if (doc.data().identity === "donor") {
-          props.onLogin(userid, password, doc.data().identity);
-          navigate(`/charity/dashboard/donor`);
-        } else if (doc.data().identity === "organization") {
-          props.onLogin(userid, password, doc.data().identity);
-          navigate(`/charity/dashboard/organization`);
-        } else {
-          props.onLogin(userid, password, doc.data().identity);
-          navigate(`/charity/dashboard/beneficiary`);
-        }
+    checkUserExists(userid.trim(), password.trim()).then((response) => {
+      console.log(response);
+      if (response !== null) {
+        console.log(response);
+        props.onLogin(userid, password, response.identity);
+        navigate(`/charity/dashboard`);
+      } else {
+        setError({
+          title: "Invalid input",
+          message:
+            "Please enter a valid Decentralized ID and password (non-empty values).",
+        });
       }
-      console.log(doc.id, " => ", doc.data());
     });
-    setError({
-      title: "Invalid input",
-      message:
-        "Please enter a valid Decentralized ID and password (non-empty values).",
-    });
-    console.log(querySnapshot);
-    console.log(userid, password);
+    // console.log(userid, password);
   };
   const resetErrorHandler = () => {
     setError(null);

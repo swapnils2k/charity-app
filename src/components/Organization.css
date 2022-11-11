@@ -22,7 +22,7 @@ input::-webkit-inner-spin-button {
 }
 
 .donate {
-  padding: 5px;
+  padding: 10px;
   margin: 10px;
   border-radius: 5px;
   border: 0;
@@ -40,7 +40,7 @@ button:hover {
 .coin-input {
   padding: 5px;
   margin: 10px;
-  height: 25px;
+  height: 30px;
   width: 100%;
   display: flex;
   justify-content: center;

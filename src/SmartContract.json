@@ -2,6 +2,11 @@
 	{
 		"inputs": [
 			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
 				"internalType": "uint256",
 				"name": "amount",
 				"type": "uint256"
@@ -69,9 +74,14 @@
 	{
 		"inputs": [
 			{
-				"internalType": "int256",
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
 				"name": "certificate",
-				"type": "int256"
+				"type": "string"
 			}
 		],
 		"name": "orgSignUp",
@@ -167,6 +177,11 @@
 				"type": "uint256"
 			},
 			{
+				"internalType": "string",
+				"name": "Name",
+				"type": "string"
+			},
+			{
 				"internalType": "enum CharityApp.ApprovalForm",
 				"name": "Status",
 				"type": "uint8"
@@ -235,9 +250,14 @@
 				"type": "address"
 			},
 			{
-				"internalType": "int256",
+				"internalType": "string",
 				"name": "Certificate",
-				"type": "int256"
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "Name",
+				"type": "string"
 			},
 			{
 				"internalType": "enum CharityApp.ApprovalForm",
