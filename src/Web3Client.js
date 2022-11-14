@@ -4,7 +4,6 @@ import SmartContractBuild from "./SmartContract.json";
 let selectedAccount;
 let isInitialized = false;
 let erc20Contract;
-let nftContract;
 let web3;
 
 export const init = async () => {
@@ -30,7 +29,7 @@ export const init = async () => {
   const Web3 = require("web3");
   web3 = new Web3(provider);
 
-  const networkId = await web3.eth.net.getId();
+  // const networkId = await web3.eth.net.getId();
 
   //   nftContract = new web3.eth.Contract(
   //     SmartContractBuild.abi,
@@ -39,27 +38,11 @@ export const init = async () => {
 
   erc20Contract = new web3.eth.Contract(
     SmartContractBuild,
-    "0xe512e9C4ac3560fD858165c6e44bDc72aB72D4Ed"
+    "0xB6E3cD7a9c6c3B7775CD9F349fC95833A61299C8"
   );
   console.log("Initialized smart contract");
 
   isInitialized = true;
-};
-
-export const checkDonorExists = async () => {
-  if (!isInitialized) {
-    await init();
-  }
-  console.log("Running methods as Initialized smart contract");
-  erc20Contract.methods
-    .registeredOrg("0xdD870fA1b7C4700F2BD7f44238821C26f7392148")
-    .call({ from: selectedAccount })
-    .then(function (result) {
-      console.log(result);
-    })
-    .catch((e) => {
-      console.log(e);
-    });
 };
 
 export const getWalletBalanceETH = async () => {
@@ -69,7 +52,7 @@ export const getWalletBalanceETH = async () => {
   console.log(selectedAccount);
   console.log(web3);
   const bal = await web3.eth.getBalance(selectedAccount);
-  const balance = web3.utils.fromWei(bal, "ether");
+  const balance = await web3.utils.fromWei(bal, "ether");
 
   return balance;
 };
@@ -103,48 +86,32 @@ export const donorSignUp = async (name) => {
   if (!isInitialized) {
     await init();
   }
-  erc20Contract.methods
-    .donorSignUp(name, "certificate")
-    .send({ from: selectedAccount })
-    .then(function (result) {
-      console.log(result);
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+  const response = await erc20Contract.methods
+    .donorSignUp(name)
+    .send({ from: selectedAccount });
+  return response;
 };
 
 export const orgSignUp = async (name) => {
   if (!isInitialized) {
     await init();
   }
-  const cert = "certificate";
-  erc20Contract.methods
+  const response = await erc20Contract.methods
     .orgSignUp(name, "certificate")
-    .send({ from: selectedAccount })
-    .then(function (result) {
-      console.log(result);
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+    .send({ from: selectedAccount });
+  return response;
 };
 
 export const beneSignUp = async (name, balance, orgAddress) => {
   if (!isInitialized) {
     await init();
   }
-  console.log(name, balance, orgAddress);
+  // console.log(name, balance, orgAddress);
   const wei = web3.utils.toWei(balance);
-  erc20Contract.methods
+  const response = await erc20Contract.methods
     .beneSignUp(name, wei, orgAddress)
-    .send({ from: selectedAccount })
-    .then(function (receipt) {
-      console.log(receipt);
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+    .send({ from: selectedAccount });
+  return response;
 };
 
 export const getBenDetails = async (benAddress) => {
@@ -157,30 +124,47 @@ export const getBenDetails = async (benAddress) => {
   return response;
 };
 
+export const getBenAmount = async (benAddress) => {
+  if (!isInitialized) {
+    await init();
+  }
+  const response = await erc20Contract.methods
+    .registeredBen(benAddress)
+    .call({ from: selectedAccount });
+  const amount = web3.utils.fromWei(response.Amount, "ether");
+  return amount;
+};
+
+export const getOrgDetails = async () => {
+  if (!isInitialized) {
+    await init();
+  }
+  const response = await erc20Contract.methods
+    .registeredOrg(selectedAccount)
+    .call({ from: selectedAccount });
+  return response;
+};
+
 export const beneUpdateStatus = async (benAddress, status) => {
   if (!isInitialized) {
     await init();
   }
-  erc20Contract.methods
+  // console.log(benAddress, status);
+  const response = await erc20Contract.methods
     .beneUpdateStatus(benAddress, status)
-    .send({ from: selectedAccount })
-    .then(function (result) {
-      console.log(result);
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+    .send({ from: selectedAccount });
+  return response;
 };
 
 export const releaseFunds = async (beneAddress, amount) => {
   if (!isInitialized) {
     await init();
   }
-  // const transferAmount = web3.utils.fromWei(amount, "ether");
-  console.log(amount);
+  const transferAmount = web3.utils.toWei(amount, "ether");
+  console.log(transferAmount);
   const response = await erc20Contract.methods
     .releaseFunds(beneAddress)
-    .send({ from: selectedAccount, value: amount });
+    .send({ from: selectedAccount, value: transferAmount });
   return response;
 };
 

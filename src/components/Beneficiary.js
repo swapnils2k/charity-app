@@ -1,10 +1,11 @@
 import { Fragment, useEffect, useState } from "react";
-import { db } from "../Firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import "./Beneficiary.css";
-import { getBenForOrg, putTransaction } from "../DataFunctions";
-import Web3 from "web3";
-import { donate } from "../Web3Client";
+import {
+  getBenForOrg,
+  putTransaction,
+  updateBeneficiaryStatus,
+} from "../DataFunctions";
+import { donate, getBenDetails } from "../Web3Client";
 
 const Beneficiary = (props) => {
   const [benList, setBenList] = useState([]);
@@ -17,7 +18,14 @@ const Beneficiary = (props) => {
   useEffect(() => {
     getBenForOrg(props.org).then((response) => {
       console.log(response);
-      setBenList(response);
+      let temp = [];
+      response.map((r) => {
+        if (r.status === "VotingStart") {
+          temp.push(r);
+        }
+      });
+      console.log(temp);
+      setBenList(temp);
     });
   }, []);
 
@@ -34,6 +42,11 @@ const Beneficiary = (props) => {
     }
     donate(props.org, benAddress, amount.toString()).then((response) => {
       console.log(response);
+      getBenDetails(benAddress).then((res) => {
+        if (res.status === 3) {
+          updateBeneficiaryStatus(props.org, benAddress, "VotesAcheived");
+        }
+      });
       putTransaction(
         response.transactionHash,
         amount.toString(),
@@ -43,19 +56,16 @@ const Beneficiary = (props) => {
     });
   };
   return (
-    <div>
+    <Fragment>
       <label htmlFor="users">Choose a Beneficiary to Donate:</label>
-
       <select name="users" id="users" onChange={onSelectUserHandler}>
         <option value="No Preference">No Preference</option>
         {benList.map((ben, i) => {
-          if (ben.status === "accept") {
-            return [
-              <option value={ben.user_id} key={i}>
-                {ben.name}
-              </option>,
-            ];
-          }
+          return [
+            <option value={ben.user_id} key={i}>
+              {ben.name}
+            </option>,
+          ];
         })}
       </select>
       <div>
@@ -74,7 +84,7 @@ const Beneficiary = (props) => {
           </button>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 };
 

@@ -81,6 +81,7 @@ export const updateBeneficiaryStatus = async (org_id, user_id, status) => {
     where("org_id", "==", org_id),
     where("user_id", "==", user_id)
   );
+  console.log(status);
   const querySnapshot = await getDocs(q);
   console.log("query: ", querySnapshot);
   let key;
@@ -99,13 +100,22 @@ export const updateBeneficiaryStatus = async (org_id, user_id, status) => {
     }
   });
   const docRef = doc(db, "org_beneficiary", key);
-  setDoc(docRef, data)
-    .then((docRef) => {
-      console.log("Entire Document has been updated successfully");
-    })
-    .catch((error) => {
-      console.log(error);
+  const setDocRes = await setDoc(docRef, data);
+  console.log(setDocRes);
+};
+
+export const getUserList = async () => {
+  let userList = [];
+  const q = query(collection(db, "users"));
+  const querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    userList.push({
+      name: doc.data().name,
+      user_id: doc.data().user_id,
     });
+    // console.log("This is the list => ", orgList);
+  });
+  return userList;
 };
 
 export const getOrgList = async () => {
@@ -202,5 +212,39 @@ export const getAllTransactionsForUser = async () => {
       tranList.push(transaction);
     }
   });
+  return tranList;
+};
+
+export const getAllTransactionsForOrg = async (orgAddress) => {
+  let tranList = [];
+  const userRef = collection(db, "transactions");
+  let q = query(userRef, where("from", "==", orgAddress));
+  let querySnapshot = await getDocs(q);
+  querySnapshot.forEach((doc) => {
+    if (doc.data() != null) {
+      const transaction = {
+        id: doc.data().id,
+        from: doc.data().from,
+        to: doc.data().to,
+        amount: doc.data().amount,
+        date: doc.data().date,
+      };
+      tranList.push(transaction);
+    }
+  });
+  // q = query(userRef, where("to", "==", orgAddress));
+  // querySnapshot = await getDocs(q);
+  // querySnapshot.forEach((doc) => {
+  //   if (doc.data() != null) {
+  //     const transaction = {
+  //       id: doc.data().id,
+  //       from: doc.data().from,
+  //       to: doc.data().to,
+  //       amount: doc.data().amount,
+  //       date: doc.data().date,
+  //     };
+  //     tranList.push(transaction);
+  //   }
+  // });
   return tranList;
 };

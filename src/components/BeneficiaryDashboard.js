@@ -43,19 +43,43 @@ const BeneficiaryDashboard = (props) => {
           <ul>
             <li>
               <a href="#" onClick={changeToHome}>
-                Home
+                {navigation !== "Home" && <div className="nav-div">Home</div>}
+                {navigation === "Home" && (
+                  <div
+                    className="nav-div"
+                    style={{
+                      height: "100%",
+                      backgroundColor: "lightblue",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Home
+                  </div>
+                )}
               </a>
             </li>
             <li>
               <a href="#" onClick={changeToRelease}>
-                Transactions
+                {navigation !== "Transactions" && (
+                  <div className="nav-div">Transactions</div>
+                )}
+                {navigation === "Transactions" && (
+                  <div
+                    className="nav-div"
+                    style={{
+                      height: "100%",
+                      backgroundColor: "lightblue",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Transactions
+                  </div>
+                )}
               </a>
             </li>
             <li>
               <Link to={`/charity/login`} onClick={props.onLogout}>
-                {/* <a href="#" onClick={props.onLogout}> */}
-                Logout
-                {/* </a> */}
+                <div className="nav-div">Logout</div>
               </Link>
             </li>
           </ul>
@@ -64,11 +88,12 @@ const BeneficiaryDashboard = (props) => {
           <div className="home">
             <div className="navigation-page">
               <h2>{navigation}</h2>
+              <h2>United Care</h2>
             </div>
             <WalletBalance className="wallet" />
             <div className="home-wrapper">
               Requested Organization: {ben.org_id}
-              <br />
+              <br /><br />
               Your Current Request Status: {ben.status}
             </div>
           </div>
@@ -78,6 +103,7 @@ const BeneficiaryDashboard = (props) => {
           <div className="home">
             <div className="navigation-page">
               <h2>{navigation}</h2>
+              <h2>United Care</h2>
             </div>
             <WalletBalance className="wallet" />
             <div className="home-wrapper">

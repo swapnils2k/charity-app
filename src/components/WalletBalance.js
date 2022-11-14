@@ -5,11 +5,17 @@ import { getWalletBalanceETH } from "../Web3Client";
 
 const WalletBalance = () => {
   const [balance, setBalance] = useState("");
+  const getBalance = async () => {
+    const bal = await getWalletBalanceETH();
+    return bal;
+  };
   useEffect(() => {
-    getWalletBalanceETH().then((bal) => {
-      console.log("Balance received ========> ", bal);
-      setBalance(bal);
-    });
+    getBalance()
+      .then((bal) => {
+        console.log("Balance received ========> ", bal);
+        setBalance(bal);
+      })
+      .catch((e) => console.log(e));
   }, []);
   return (
     <Fragment>

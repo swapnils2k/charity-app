@@ -1,24 +1,33 @@
 import { Fragment, useState, useEffect } from "react";
 import { db } from "../Firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { getAllTransactionsForUser } from "../DataFunctions";
+import { getAllTransactionsForUser, getUserList } from "../DataFunctions";
 
 const Transaction = () => {
   const [transactionsList, setTransactionsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const getData = async () => {
-    let transactionsList = [];
-    getAllTransactionsForUser()
-      .then((response) => {
-        setTransactionsList(response);
-        setIsLoading(false);
-      })
-      .catch((e) => console.log(e));
+    const response = await getAllTransactionsForUser();
+    console.log(response);
+    response.sort(function (x, y) {
+      return new Date(y.date) - new Date(x.date);
+    });
+    const userMap = new Map();
+    const userList = await getUserList();
+    userList.map((user) => {
+      userMap.set(user.user_id, user.name);
+    });
+    response.map((t) => {
+      t.fromName = userMap.get(t.from);
+      t.toName = userMap.get(t.to);
+    });
+    setTransactionsList(response);
+    setIsLoading(false);
 
     console.log("This is the list => ", transactionsList);
   };
   useEffect(() => {
-    getData();
+    getData().catch((e) => console.log(e));
     // console.log("This is the list => ", list);
   }, []);
   return (
@@ -40,10 +49,10 @@ const Transaction = () => {
             {transactionsList.map((transaction, i) => [
               <tr key={transaction.id}>
                 <td>{transaction.id}</td>
-                <td>{transaction.from}</td>
-                <td>{transaction.to}</td>
+                <td>{transaction.fromName}</td>
+                <td>{transaction.toName}</td>
                 <td>{transaction.amount}</td>
-                <td>{transaction.date}</td>
+                <td>{new Date(transaction.date).toString()}</td>
               </tr>,
             ])}
           </tbody>

@@ -1,49 +1,57 @@
 import { Fragment, useState, useEffect } from "react";
 import { getBenForOrg } from "../DataFunctions";
 import Modal from "./Modal";
-import { releaseFunds, getBenDetails } from "../Web3Client";
-import { putTransaction } from "../DataFunctions";
+import { releaseFunds, getBenAmount } from "../Web3Client";
+import { putTransaction, updateBeneficiaryStatus } from "../DataFunctions";
 
 import "./ReleaseFunds.css";
 
 const ReleaseFunds = () => {
   const [benList, setBenList] = useState([]);
   const [error, setError] = useState();
+
+  const getBenForOrganization = async (org_id) => {
+    const response = await getBenForOrg(org_id);
+    const tempList = [];
+    response.map((ben) => {
+      if (ben.status === "VotesAchieved") {
+        tempList.push(ben);
+      }
+    });
+    setBenList(tempList);
+  };
+
   useEffect(() => {
     const org_id = localStorage.getItem("userid");
-    getBenForOrg(org_id)
-      .then((response) => {
-        const tempList = [];
-        response.map((ben) => {
-          if (ben.status === "accept") {
-            tempList.push(ben);
-          }
-        });
-        setBenList(tempList);
-      })
-      .catch((e) => {
-        console.log(e);
-        setError({
-          title: "Something went wrong",
-          message: e,
-        });
+    getBenForOrganization(org_id).catch((e) => {
+      console.log(e);
+      setError({
+        title: "Something went wrong",
+        message: e,
       });
-  }, []);
+    });
+  }, [getBenForOrganization]);
   const resetErrorHandler = () => {
     setError(null);
   };
 
   const release = async (benAddress) => {
-    const benDetails = await getBenDetails(benAddress);
-    const response = await releaseFunds(benAddress, benDetails.Amount);
+    const amount = await getBenAmount(benAddress);
+    console.log(amount);
+    const response = await releaseFunds(benAddress, amount);
     const putDataResponse = await putTransaction(
       response.transactionHash,
-      benDetails.Amount.toString(),
+      amount.toString(),
       localStorage.getItem("userid"),
       benAddress
     );
     const org_id = localStorage.getItem("userid");
-    const updateStatusResponse = await (org_id, benAddress, "release");
+    const updateStatusResponse = await updateBeneficiaryStatus(
+      org_id,
+      benAddress,
+      "release"
+    );
+    getBenForOrganization(org_id);
   };
 
   const onReleaseFunds = (e) => {
@@ -54,7 +62,7 @@ const ReleaseFunds = () => {
         console.log(e);
         setError({
           title: "Something went wrong",
-          message: "User has not received sufficient votes",
+          message: "Please try again",
         });
       });
   };
@@ -80,7 +88,7 @@ const ReleaseFunds = () => {
                 <td>{ben.name}</td>
                 <td>{ben.status}</td>
                 <td>
-                  {ben.status === "accept" && (
+                  {ben.status === "VotesAchieved" && (
                     <button
                       className="button-enabled"
                       value={ben.user_id}
@@ -89,7 +97,7 @@ const ReleaseFunds = () => {
                       Release
                     </button>
                   )}
-                  {ben.status !== "accept" && (
+                  {ben.status !== "VotesAchieved" && (
                     <button disabled className="button-disabled">
                       Release
                     </button>
@@ -99,6 +107,9 @@ const ReleaseFunds = () => {
             ))}
           </tbody>
         </table>
+        {benList.length === 0 && (
+          <div className="loading-transaction">No Pending Requests</div>
+        )}
       </div>
     </Fragment>
   );

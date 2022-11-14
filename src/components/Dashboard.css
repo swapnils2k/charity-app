@@ -32,9 +32,13 @@ img {
 .navbar ul li a {
   display: block;
   text-decoration: none;
-  padding: 20px;
+  /* padding: 20px; */
   color: rgb(56, 56, 56);
   text-align: center;
+}
+
+.nav-div {
+  padding: 20px;
 }
 
 .home {
@@ -59,6 +63,8 @@ img {
   background-color: rgb(255, 255, 255);
   color: rgb(27, 27, 27);
   border-left: 1px solid rgb(206, 206, 206);
+  display: flex;
+  justify-content: space-between;
 }
 
 .transaction-div {
@@ -126,16 +132,24 @@ tr:last-child {
 }
 
 .org-dash-button-r {
-  background-color: rgb(206, 67, 67);
+  background-color: rgb(213, 94, 94);
 }
 
 .org-dash-button {
   padding: 5px 10px 5px 10px;
   margin: 5px;
+  width: 150px;
   border-radius: 5px;
 }
 
 .loading-transaction {
   display: flex;
   justify-content: center;
+}
+
+.toggle-button {
+  padding: 10px;
+  background-color: rgb(77, 105, 154);
+  border-radius: 5px;
+  color: white;
 }

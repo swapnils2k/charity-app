@@ -13,13 +13,6 @@ function App() {
     if (localStorage.getItem("isLoggedIn") === "1") {
       setIsLoggedIn(true);
     }
-    // checkDonorExists()
-    //   .then((response) => {
-    //     console.log(response);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   }, []);
   const loginHandler = async (userid, password, identity) => {
     localStorage.setItem("isLoggedIn", "1");

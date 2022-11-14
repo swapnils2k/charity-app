@@ -4,8 +4,10 @@ import Organization from "./Organization";
 import Transaction from "./Transaction";
 import WalletBalance from "./WalletBalance";
 import Beneficiary from "./Beneficiary";
+import TransactionsOrg from "./TransactionsOrg";
 import "./Dashboard.css";
 import logo from "../images/logo.png";
+import { getAllTransactionsForOrg } from "../DataFunctions";
 import { db } from "../Firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
@@ -14,6 +16,7 @@ const Dashboard = (props) => {
   const navigate = useNavigate();
   const [orgList, setOrgList] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
+  const [orgTrnsactions, setOrgTransactions] = useState([]);
   const getData = async () => {
     let orgList = [];
     const q = query(collection(db, "organizations"));
@@ -24,10 +27,21 @@ const Dashboard = (props) => {
         org_id: doc.data().org_id,
         org_name: doc.data().org_name,
       });
-      console.log("This is the list => ", orgList);
     });
+    console.log("This is the list => ", orgList);
+    let orgTrnsactions = [];
+    await tempFun(orgList);
+    console.log("After wait");
     setOrgList(orgList);
-    // console.log("This is the list => ", list);
+  };
+  const tempFun = async (orgList) => {
+    let promisesList = [];
+    orgList.map(async (org) => {
+      promisesList.push(getAllTransactionsForOrg(org.org_id));
+    });
+    Promise.all(promisesList).then((allResp) => {
+      setOrgTransactions(...allResp);
+    });
   };
   useEffect(() => {
     if (props.loggedIn === false) {
@@ -42,8 +56,11 @@ const Dashboard = (props) => {
     // console.log("This is the list => ", orgList);
     setNavigation("Home");
   };
-  const changeToProfile = () => {
-    setNavigation("Profile");
+  const changeToTransactions = () => {
+    setNavigation("Transactions");
+  };
+  const changeToOrgTransactions = () => {
+    setNavigation("Organization Transactions");
   };
 
   return (
@@ -56,19 +73,62 @@ const Dashboard = (props) => {
           <ul>
             <li key="home">
               <a href="#" onClick={changeToHome}>
-                Home
+                {navigation !== "Home" && <div className="nav-div">Home</div>}
+                {navigation === "Home" && (
+                  <div
+                    className="nav-div"
+                    style={{
+                      height: "100%",
+                      backgroundColor: "lightblue",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Home
+                  </div>
+                )}
               </a>
             </li>
-            <li key="profile">
-              <a href="#" onClick={changeToProfile}>
-                Profile
+            <li key="transactions">
+              <a href="#" onClick={changeToTransactions}>
+                {navigation !== "Transactions" && (
+                  <div className="nav-div">Transactions</div>
+                )}
+                {navigation === "Transactions" && (
+                  <div
+                    className="nav-div"
+                    style={{
+                      // padding: "10px",
+                      backgroundColor: "lightblue",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Transactions
+                  </div>
+                )}
+              </a>
+            </li>
+            <li key="orgTransactions">
+              <a href="#" onClick={changeToOrgTransactions}>
+                {navigation !== "Organization Transactions" && (
+                  <div className="nav-div">Organization Transactions</div>
+                )}
+                {navigation === "Organization Transactions" && (
+                  <div
+                    className="nav-div"
+                    style={{
+                      // padding: "12px",
+                      backgroundColor: "lightblue",
+                      borderRadius: "5px",
+                    }}
+                  >
+                    Organization Transactions
+                  </div>
+                )}
               </a>
             </li>
             <li key="logout">
               <Link to={`/charity/login`} onClick={props.onLogout}>
-                {/* <a href="#" onClick={props.onLogout}> */}
-                Logout
-                {/* </a> */}
+                <div className="nav-div">Logout</div>
               </Link>
             </li>
           </ul>
@@ -77,6 +137,7 @@ const Dashboard = (props) => {
           <div className="home">
             <div className="navigation-page">
               <h2>{navigation}</h2>
+              <h2>United Care</h2>
             </div>
             <WalletBalance className="wallet" />
             <div className="home-wrapper">
@@ -99,14 +160,28 @@ const Dashboard = (props) => {
           </div>
         )}
 
-        {navigation === "Profile" && (
+        {navigation === "Transactions" && (
           <div className="home">
             <div className="navigation-page">
               <h2>{navigation}</h2>
+              <h2>United Care</h2>
             </div>
             <WalletBalance className="wallet" />
             <div className="home-wrapper">
               <Transaction />
+            </div>
+          </div>
+        )}
+
+        {navigation === "Organization Transactions" && (
+          <div className="home">
+            <div className="navigation-page">
+              <h2>{navigation}</h2>
+              <h2>United Care</h2>
+            </div>
+            <WalletBalance className="wallet" />
+            <div className="home-wrapper">
+              <TransactionsOrg orgTrnsactions={orgTrnsactions} />
             </div>
           </div>
         )}
