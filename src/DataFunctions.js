@@ -246,5 +246,6 @@ export const getAllTransactionsForOrg = async (orgAddress) => {
   //     tranList.push(transaction);
   //   }
   // });
+  console.log(tranList);
   return tranList;
 };

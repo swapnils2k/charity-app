@@ -32,6 +32,7 @@ const Dashboard = (props) => {
     let orgTrnsactions = [];
     await tempFun(orgList);
     console.log("After wait");
+    // console.log(orgTrnsactions);
     setOrgList(orgList);
   };
   const tempFun = async (orgList) => {
@@ -41,6 +42,7 @@ const Dashboard = (props) => {
     });
     Promise.all(promisesList).then((allResp) => {
       setOrgTransactions(...allResp);
+      console.log(allResp);
     });
   };
   useEffect(() => {
@@ -48,9 +50,9 @@ const Dashboard = (props) => {
       console.log("User not logged in");
       navigate(`/`);
     }
-    getData();
+    getData().catch((e) => console.log(e));
     // console.log("This is the list => ", list);
-  }, []);
+  }, [navigation]);
 
   const changeToHome = () => {
     // console.log("This is the list => ", orgList);

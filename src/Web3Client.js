@@ -38,7 +38,7 @@ export const init = async () => {
 
   erc20Contract = new web3.eth.Contract(
     SmartContractBuild,
-    "0xB6E3cD7a9c6c3B7775CD9F349fC95833A61299C8"
+    "0xB26862cDfa83D40b48AF8C15d8910002f258D172"
   );
   console.log("Initialized smart contract");
 

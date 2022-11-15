@@ -219,6 +219,15 @@ const SignUp = (props) => {
               onChange={onOrgDetailsChangeHandler}
             />
           )}
+          {identity === "organization" && (
+            <input
+              type="text"
+              placeholder="Enter Organization Certificate"
+              // id="organization"
+              className="input"
+              // onChange={onOrgDetailsChangeHandler}
+            />
+          )}
           <button className="button" onClick={onSignUp}>
             Sign Up
           </button>

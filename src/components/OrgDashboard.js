@@ -10,7 +10,7 @@ import { getBenForOrg, updateBeneficiaryStatus } from "../DataFunctions";
 import { beneUpdateStatus, getOrgDetails, getBenDetails } from "../Web3Client";
 
 const OrgDashboard = (props) => {
-  const [navigation, setNavigation] = useState("Home");
+  const [navigation, setNavigation] = useState("Requests");
   const navigate = useNavigate();
   const [benList, setBenList] = useState([]);
   const [toggleBenList, setToggleBenList] = useState([]);
