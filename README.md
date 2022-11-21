@@ -1,4 +1,4 @@
-UNITED CARE ~LIFE OF GIVING
+# UNITED CARE ~LIFE OF GIVING
 
 When it comes to charity organizations even though they serve a good purpose it still lacks trust, and donors are not acknowledged as to where the money has been transfered to, such as the donations may have been received to the appropriate beneficiary or may have been used for some inappropriate cause.
 
@@ -6,7 +6,7 @@ We have come up with a solution to establish trust among the donors, organizatio
 
 With blockchain technology we have created a decentralized system where participants are acknowledged and in control of their assets. With the advantage of distributed ledger technology we are keeping track of donors' money that has been transferred to the respective beneficiary. 
 
-Sequence of operations
+## Sequence of operations
 
 1. Organizations sign up with details and a unique certificate number. The certificate number is to validate if the organization is legitimate and genuine.
 2. An agent(such as government officials) will do the background check on the organizations using the unique certificate number provided. If the agent verifies and validates the organization as genuine and will promise beneficiaries for a good cause, then the agent approves the request, else declines.
